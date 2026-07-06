@@ -1,0 +1,14 @@
+services:
+  cuopt-test:
+    image: bci-cuopt:latest
+    build:
+      context: .
+      dockerfile: Containerfile
+    # Expose the GPU to the container (requires NVIDIA Container Toolkit on host)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

@@ -1,0 +1,32 @@
+# Start from the official, secure SUSE Python 3.11 Base Container Image
+FROM registry.suse.com/bci/python:3.11
+
+# Set the working directory
+WORKDIR /app
+
+# Copy requirements file
+COPY requirements.txt /app/requirements.txt
+
+# Install cuOpt and its CUDA-X dependencies (cupy, cudf, libcuopt, etc.)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --extra-index-url=https://pypi.nvidia.com -r /app/requirements.txt
+
+# Copy test/application files
+COPY test_cuopt.py /app/test_cuopt.py
+
+# Configure environment variables to locate precompiled CUDA-X shared libraries
+ENV LD_LIBRARY_PATH="/usr/local/lib/python3.11/site-packages/nvidia/cublas/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/cuda_runtime/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/curand/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/cusolver/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/cusparse/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/nccl/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/nvjitlink/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/nvtx/lib:\
+/usr/local/lib/python3.11/site-packages/nvidia/libnvcomp/lib64:\
+/usr/local/lib/python3.11/site-packages/nvidia/cuda_nvcc/nvvm/lib64:\
+/usr/local/lib/python3.11/site-packages/nvidia/cu12/lib:${LD_LIBRARY_PATH}"
+
+# Default command runs the functional verification test
+CMD ["python3", "/app/test_cuopt.py"]
