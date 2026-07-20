@@ -1,0 +1,14 @@
+services:
+  cuda-q-test:
+    image: bci-q:latest
+    build:
+      context: .
+      dockerfile: Containerfile
+    # GPU support (optional: CUDA-Q defaults to a high-performance CPU backend if no GPU is found)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
