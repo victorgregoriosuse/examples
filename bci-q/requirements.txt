@@ -1,1 +1,2 @@
 cudaq
+cuquantum-python-cu13

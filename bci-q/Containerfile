@@ -7,9 +7,9 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt /app/requirements.txt
 
-# Upgrade pip and install cudaq using the container's native Python 3.13
+# Upgrade pip and install requirements using the container's native Python 3.13
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir cudaq
+    pip install --no-cache-dir --extra-index-url=https://pypi.nvidia.com -r /app/requirements.txt
 
 # Copy test/application files
 COPY test_q.py /app/test_q.py
